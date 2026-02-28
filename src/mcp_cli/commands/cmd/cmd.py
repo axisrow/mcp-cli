@@ -16,6 +16,7 @@ from mcp_cli.commands.base import (
     CommandResult,
     UnifiedCommand,
 )
+from mcp_cli.utils.serialization import to_serializable, unwrap_tool_result
 
 logger = logging.getLogger(__name__)
 
@@ -183,19 +184,18 @@ Usage:
 
             result_data = tool_call_result.result
 
+            # Unwrap middleware ToolExecutionResult if present
+            result_data = unwrap_tool_result(result_data)
+
+            # Convert to JSON-serializable form
+            result_data = to_serializable(result_data)
+
             # Format result
-            if raw:
-                result_str = (
-                    json.dumps(result_data)
-                    if not isinstance(result_data, str)
-                    else result_data
-                )
-            else:
-                result_str = (
-                    json.dumps(result_data, indent=2)
-                    if not isinstance(result_data, str)
-                    else result_data
-                )
+            result_str = (
+                json.dumps(result_data, indent=None if raw else 2)
+                if not isinstance(result_data, str)
+                else result_data
+            )
 
             # Write output
             if output_file and output_file != "-":
@@ -427,9 +427,12 @@ Usage:
 
             try:
                 result = await tool_manager.execute_tool(tool_name, tool_args)
-                result_data = (
-                    result.result if result.success else f"Error: {result.error}"
-                )
+                if result.success:
+                    result_data = to_serializable(
+                        unwrap_tool_result(result.result)
+                    )
+                else:
+                    result_data = f"Error: {result.error}"
                 result_str = (
                     json.dumps(result_data)
                     if not isinstance(result_data, str)
