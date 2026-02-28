@@ -34,6 +34,9 @@ def unwrap_tool_result(obj: Any, *, max_depth: int = _UNWRAP_MAX_DEPTH) -> Any:
 
     # Unwrap MCP call_tool dict pattern: {"isError": ..., "content": ...}
     if isinstance(obj, dict) and "content" in obj and "isError" in obj:
+        if obj["isError"]:
+            error_msg = obj.get("error") or obj.get("content") or "Tool returned an error"
+            raise RuntimeError(error_msg)
         obj = obj["content"]
 
     return obj
