@@ -23,7 +23,7 @@ from mcp_cli.config.defaults import (
     JSON_TYPE_STRING,
 )
 from mcp_cli.tools.manager import ToolManager
-from mcp_cli.utils.serialization import to_serializable as _to_serializable
+from mcp_cli.utils.serialization import to_serializable, unwrap_tool_result
 from chuk_term.ui import output
 
 
@@ -305,10 +305,10 @@ Tips:
 
                 if isinstance(result, ToolCallResult):
                     if result.success and result.result is not None:
-                        output.success("✅ Tool executed successfully")
                         # Extract the actual result from ToolCallResult
-                        # Use _to_serializable to handle MCP SDK types
-                        serializable_result = _to_serializable(result.result)
+                        # Unwrap middleware wrappers, then serialize
+                        serializable_result = to_serializable(unwrap_tool_result(result.result))
+                        output.success("✅ Tool executed successfully")
                         if isinstance(serializable_result, (dict, list)):
                             output.print(json.dumps(serializable_result, indent=2))
                         else:
@@ -349,8 +349,8 @@ Tips:
                     else:
                         output.warning("Tool returned no result")
                 elif isinstance(result, dict):  # type: ignore[unreachable]
+                    serializable_result = to_serializable(unwrap_tool_result(result))
                     output.success("✅ Tool executed successfully")
-                    serializable_result = _to_serializable(result)
                     output.print(json.dumps(serializable_result, indent=2))
                 else:
                     output.success("✅ Tool executed successfully")

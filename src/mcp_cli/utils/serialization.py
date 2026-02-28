@@ -25,7 +25,7 @@ def unwrap_tool_result(obj: Any, *, max_depth: int = _UNWRAP_MAX_DEPTH) -> Any:
         and not isinstance(obj, dict)
     ):
         if depth >= max_depth:
-            break
+            raise RuntimeError(f"Exceeded max unwrap depth ({max_depth})")
         if not obj.success:
             error = getattr(obj, "error", None) or "Unknown tool error"
             raise RuntimeError(error)
@@ -36,6 +36,8 @@ def unwrap_tool_result(obj: Any, *, max_depth: int = _UNWRAP_MAX_DEPTH) -> Any:
     if isinstance(obj, dict) and "content" in obj and "isError" in obj:
         if obj["isError"]:
             error_msg = obj.get("error") or obj.get("content") or "Tool returned an error"
+            if not isinstance(error_msg, str):
+                error_msg = str(error_msg)
             raise RuntimeError(error_msg)
         obj = obj["content"]
 
