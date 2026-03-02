@@ -183,13 +183,13 @@ class ConfigLoader:
                                     )
                                     return token_value
                                 else:
-                                    logger.warning(
+                                    logger.debug(
                                         f"Token {namespace}:{name} has no token value in data"
                                     )
                             else:
-                                logger.warning(f"Token not found: {namespace}:{name}")
+                                logger.debug(f"Token not found: {namespace}:{name}")
                         except Exception as e:
-                            logger.warning(
+                            logger.debug(
                                 f"Failed to get token {namespace}:{name}: {e}"
                             )
 

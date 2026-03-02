@@ -308,8 +308,8 @@ def cli_entry(
     server: list[str] = typer.Option(
         ["sqlite"], "--server", "-s", help="Server(s) to connect"
     ),
-    provider: str = typer.Option("openai", help="LLM provider name"),
-    model: str = typer.Option("gpt-4o-mini", help="LLM model name"),
+    provider: str = typer.Option("ollama", help="LLM provider name"),
+    model: str = typer.Option("gpt-oss", help="LLM model name"),
     init_timeout: float = typer.Option(
         120.0, "--init-timeout", help="Server initialization timeout in seconds"
     ),

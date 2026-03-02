@@ -30,7 +30,7 @@ from chuk_term.ui import (
     restore_terminal,
 )
 from chuk_term.ui.theme import set_theme
-from mcp_cli.config import process_options, APP_VERSION, DEFAULT_CONFIG_FILENAME
+from mcp_cli.config import process_options, APP_VERSION, DEFAULT_CONFIG_FILENAME, DEFAULT_PROVIDER, DEFAULT_MODEL
 from mcp_cli.context import initialize_context
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -345,11 +345,11 @@ def main_callback(
             f"Using current provider with specified model: {effective_provider}/{model}"
         )
     else:
-        # Neither specified, use active configuration
-        effective_provider = model_manager.get_active_provider()
-        effective_model = model_manager.get_active_model()
+        # Neither specified — use declared project defaults
+        effective_provider = DEFAULT_PROVIDER
+        effective_model = DEFAULT_MODEL
         logger.debug(
-            f"Using active configuration: {effective_provider}/{effective_model}"
+            f"Using default configuration: {effective_provider}/{effective_model}"
         )
 
     servers, _, server_names = process_options(
@@ -649,8 +649,9 @@ def _chat_command(
         effective_provider = model_manager.get_active_provider()
         effective_model = model
     else:
-        effective_provider = model_manager.get_active_provider()
-        effective_model = model_manager.get_active_model()
+        # Neither specified — use declared project defaults
+        effective_provider = DEFAULT_PROVIDER
+        effective_model = DEFAULT_MODEL
 
     servers, _, server_names = process_options(
         server,
@@ -818,11 +819,11 @@ def _interactive_command(
             f"Using current provider with specified model: {effective_provider}/{model}"
         )
     else:
-        # Neither specified, use active configuration
-        effective_provider = model_manager.get_active_provider()
-        effective_model = model_manager.get_active_model()
+        # Neither specified — use declared project defaults
+        effective_provider = DEFAULT_PROVIDER
+        effective_model = DEFAULT_MODEL
         logger.debug(
-            f"Using active configuration: {effective_provider}/{effective_model}"
+            f"Using default configuration: {effective_provider}/{effective_model}"
         )
 
     servers, _, server_names = process_options(
