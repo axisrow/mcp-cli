@@ -243,6 +243,12 @@ mcp-cli --help
 pip install -e ".[apps]"
 ```
 
+4. **Set up server configuration**:
+```bash
+cp src/mcp_cli/server_config.example.json server_config.json
+# Edit server_config.json — keep only the servers you need
+```
+
 ### Using Different Models
 
 ```bash
@@ -900,54 +906,10 @@ MCP CLI searches for `server_config.json` in the following priority order:
    mcp-cli --server sqlite    # Uses ./server_config.json if it exists
    ```
 
-3. **Bundled default** - When running via `uvx` or from any directory without a local config:
-   ```bash
-   uvx mcp-cli --server cloudflare_workers    # Uses packaged server_config.json
-   ```
-
 This means you can:
-- **Override per-project**: Place a `server_config.json` in your project directory with project-specific server configurations
-- **Use defaults globally**: Run `uvx mcp-cli` from anywhere and get the bundled default servers
+- **Per-project config**: Place a `server_config.json` in your project directory with project-specific server configurations
 - **Customize explicitly**: Use `--config-file` to specify any configuration file location
-
-### Bundled Default Servers
-
-MCP CLI v0.11.1+ comes with an expanded set of pre-configured servers in the bundled `server_config.json`:
-
-| Server | Type | Description | Configuration |
-|--------|------|-------------|---------------|
-| **sqlite** | STDIO | SQLite database operations | `uvx mcp-server-sqlite --db-path test.db` |
-| **echo** | STDIO | Echo server for testing | `uvx chuk-mcp-echo stdio` |
-| **math** | STDIO | Mathematical computations | `uvx chuk-mcp-math-server` |
-| **playwright** | STDIO | Browser automation | `npx @playwright/mcp@latest` |
-| **brave_search** | STDIO | Web search via Brave API | Requires `BRAVE_API_KEY` token |
-| **notion** | HTTP | Notion workspace integration | `https://mcp.notion.com/mcp` (OAuth) |
-| **cloudflare_workers** | HTTP | Cloudflare Workers bindings | `https://bindings.mcp.cloudflare.com/mcp` (OAuth) |
-| **monday** | HTTP | Monday.com integration | `https://mcp.monday.com/mcp` (OAuth) |
-| **linkedin** | HTTP | LinkedIn integration | `https://linkedin.chukai.io/mcp` |
-| **weather** | HTTP | Weather data service | `https://weather.chukai.io/mcp` |
-
-**Note**: HTTP servers and API-based servers require authentication. Use the [Token Management](docs/TOKEN_MANAGEMENT.md) system to configure access tokens.
-
-To use these servers:
-```bash
-# Use bundled servers from anywhere
-uvx mcp-cli --server sqlite
-uvx mcp-cli --server echo
-uvx mcp-cli --server math
-uvx mcp-cli --server playwright
-
-# API-based servers require tokens
-mcp-cli token set brave_search --type bearer
-uvx mcp-cli --server brave_search
-
-# HTTP/OAuth servers require OAuth authentication
-uvx mcp-cli token set notion --oauth
-uvx mcp-cli --server notion
-
-# Use multiple servers simultaneously
-uvx mcp-cli --server sqlite,math,playwright
-```
+- **Reference example**: See `server_config.example.json` in the repository for a list of available servers and configuration examples
 
 ### Project Configuration
 

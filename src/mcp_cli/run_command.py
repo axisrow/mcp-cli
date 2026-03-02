@@ -23,7 +23,7 @@ import typer
 from rich.panel import Panel
 from chuk_term.ui import output
 
-from mcp_cli.config.defaults import DEFAULT_PROVIDER, DEFAULT_MODEL
+from mcp_cli.config.defaults import DEFAULT_PROVIDER, DEFAULT_MODEL, DEFAULT_CONFIG_FILENAME
 from mcp_cli.tools.manager import ToolManager
 from mcp_cli.context import initialize_context
 
@@ -303,7 +303,7 @@ app = typer.Typer(add_completion=False, help="Master control programme 🙂")
 def cli_entry(
     mode: str = typer.Argument("chat", help="chat | interactive"),
     config_file: str = typer.Option(
-        "server_config.json", "--config", "-c", help="Server config file"
+        DEFAULT_CONFIG_FILENAME, "--config", "-c", help="Server config file"
     ),
     server: list[str] = typer.Option(
         ["sqlite"], "--server", "-s", help="Server(s) to connect"
